@@ -1,14 +1,11 @@
 class CommentsController < ApplicationController
   before_filter :login_required
+  respond_to :html, :xml
 
   def new
     @post = Post.find(params[:post_id])
     @comment = @post.comments.build
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
+    respond_with(@post,@comment)
   end
 
   def create

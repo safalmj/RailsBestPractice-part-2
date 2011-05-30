@@ -1,24 +1,16 @@
 class PostsController < ApplicationController
   before_filter :login_required, :except => [:index, :show]
-
+  respond_to :html, :xml
   def index
     @posts = Post.all
     # show all posts that have more than 10 comments
-    @popular_posts = Post.all.collect{|p| p if p.comments.length > 10}.compact
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
+    @popular_posts = Post.find_each(:batch_size => 100).collect{|p| p if p.comments.length > 10}.compact
+    respond_with(@posts)
   end
 
   def new
     @post = Post.new
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
+    respond_with(@post)
   end
 
   def create
@@ -35,12 +27,9 @@ class PostsController < ApplicationController
 
   def show
     @post = Post.find(params[:id])
-    @comment = Comment.new
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
+    @comment = Comment.new 
+    @comments = Comment.where(post_id:@post.id)
+    respond_with(@post, @comment)
   end
 
 end

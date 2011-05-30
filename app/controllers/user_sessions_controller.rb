@@ -1,11 +1,8 @@
-class UserSessionsController < ApplicationController
+class UserSessionsController < ApplicationController 
+  respond_to :html, :xml 
   def new
     @user_session = UserSession.new
-
-    respond_to do |format|
-      format.html
-      format.xml
-    end
+    respond_with(@user_session)
   end
 
   def create
